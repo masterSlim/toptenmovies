@@ -1,0 +1,25 @@
+kinopoisk-api:
+  key: c84b92f5-1609-40ed-9b82-db53584b14a7
+  api: https://kinopoiskapiunofficial.tech
+  getTopMethod: /api/v2.2/films/top/lists/movies/top250/year--2021/
+parser:
+  online: false
+  test-file: src/main/resources/250 лучших фильмов — Кинопоиск.htm
+  headers-file: src/main/resources/headers.json
+  get-top-template: /lists/movies/year--DATE/?b=top
+  title-css-class: styles_mainTitle__IFQyZ
+  rating-css-class: styles_kinopoiskValue__9qXjg
+  votes-css-class: styles_kinopoiskCount__2_VPQ
+  secondary-text-css-class: desktop-list-main-info_secondaryText__M_aus
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/kinopoisk
+    username: app
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:ddl-auto: update
+    generate-ddl: true
+  h2:
+    console:
+      enabled: true
