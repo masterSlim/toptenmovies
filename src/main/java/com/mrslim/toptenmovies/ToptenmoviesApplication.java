@@ -26,13 +26,14 @@ public class ToptenmoviesApplication {
     @Autowired
     ChartRepository chartRepository;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         SpringApplication.run(ToptenmoviesApplication.class, args);
+        System.out.println("runned application");
     }
 
     @PostConstruct
     public void test() {
-        try {
+/*        try {
             int forDate = 2011;
             LinkedList<MovieEntity> movies = pms.getMovies(forDate);
             for (MovieEntity me :movies) {
@@ -51,12 +52,10 @@ public class ToptenmoviesApplication {
                 System.out.println(e);
                 System.out.println("movie: " + movieRepository.findByHash(e.getMovieHash())+ "\n");
             }
-        } catch (URISyntaxException e) {
-            System.err.println("Ошибка в ссылке API");
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             System.err.println("Ошибка при обращении к серверу API");
             e.printStackTrace();
-        }
+        }*/
     }
 
 }

@@ -37,7 +37,7 @@ public class ApiMovieService implements MovieService {
 
     @Override
     @Cacheable()
-    public LinkedList<MovieEntity> getMovies(int forDate, int amount) throws URISyntaxException, IOException, InterruptedException {
+    public LinkedList<MovieEntity> getMovies(int... years) throws URISyntaxException, IOException, InterruptedException {
 
         LinkedList<MovieEntity> result = new LinkedList<>();
         ObjectMapper mapper = new ObjectMapper();

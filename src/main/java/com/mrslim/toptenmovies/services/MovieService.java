@@ -7,5 +7,5 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 
 public interface MovieService {
-    LinkedList<MovieEntity> getMovies(int forDate, int amount) throws URISyntaxException, IOException, InterruptedException;
+    LinkedList<MovieEntity> getMovies(int... years) throws URISyntaxException, IOException, InterruptedException;
 }

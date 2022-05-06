@@ -38,16 +38,19 @@ import java.util.regex.Pattern;
 @Service
 public class ParseMovieService implements MovieService {
     private final String site = "https://www.kinopoisk.ru";
+    //TODO вести в файл конфигурации
+    private final int amount = 10;
     @Autowired
     private ParserConfig parserConfig;
     @Autowired
     MovieRepository movieRepository;
 
     @Override
-    public LinkedList<MovieEntity> getMovies(int forDate, int amount) throws IOException {
+    public LinkedList<MovieEntity> getMovies(int...years) throws IOException {
         LinkedList<MovieEntity> result;
         if (parserConfig.isOnline()) {
-            String getTopTemplate = parserConfig.getGetTopTemplate().replace("DATE", Integer.toString(forDate));
+            String range = (years.length == 2) ? years[0] + "-" + years[1] : Integer.toString(years[0]);
+            String getTopTemplate = parserConfig.getGetTopTemplate().replace("DATE", range);
             Connection con = Jsoup.connect(site + getTopTemplate).headers(getHeaders());
             Document page = con.get();
             result = new LinkedList<>(parse(page).subList(0, amount));
@@ -57,11 +60,6 @@ public class ParseMovieService implements MovieService {
         }
 
         return result;
-    }
-
-    //TODO: добавить выбор метод с выбором диапазона годов
-    public LinkedList<MovieEntity> getMovies(int forDate) throws URISyntaxException, IOException, InterruptedException {
-        return getMovies(forDate, 10);
     }
 
     /**
@@ -111,7 +109,7 @@ public class ParseMovieService implements MovieService {
             int a = secondaryText.lastIndexOf(", ", b - 1);
             if (a != -1) {
                 originalName = secondaryText.substring(0, a);
-                Pattern p = Pattern.compile("\\d{4}");
+                Pattern p = Pattern.compile("\\d{4}"); // d{4} четыре цифры
                 Matcher m = p.matcher(secondaryText.substring(a, b));
                 m.find();
                 year = Integer.parseInt(m.group());
