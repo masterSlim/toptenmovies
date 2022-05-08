@@ -1,14 +1,26 @@
 package com.mrslim.toptenmovies.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Configuration
-@EnableConfigurationProperties({ApiConfig.class, ParserConfig.class})
+@ConfigurationProperties("application-properties")
 public class ApplicationConfig {
-    @Autowired
-    private ApiConfig apiConfig;
-    @Autowired
-    private ParserConfig parserConfig;
+    private Mode mode;
+    private int size;
+
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }
 }

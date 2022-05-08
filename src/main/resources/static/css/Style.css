@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap');
+
+:root {
+--stage-color: #050012;
+--area-color: #fffce3;
+--text-color-dark: #050012;
+--text-color-light: #e0e0e0;
+--attention-color: #f5e000;
+--border-color: #A3A3A3;
+--button-color: #e0e0e0;
+--gradient-color-1: #1d144d;
+--gradient-color-2: #030012;
+--border-radius: 13px;
+--margin: 5px;
+}
+
+.stage{
+background-color: var(--stage-color);
+color: var(--text-color-dark);
+}
+.flex-column{
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15vh;
+  padding: 15px;
+  height:auto;
+  min-height: 280px;
+  max-height: 300vh;
+  min-width: 170px;
+  max-width: 500px;
+  border-radius: var(--border-radius);
+}
+.flex-row{
+  display:inline-flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.gradient-background{
+  background: #007bd9;
+  background: -moz-radial-gradient(center, ellipse cover,  var(--gradient-color-1) 0%, var(--gradient-color-2) 100%) no-repeat;
+  background: -webkit-radial-gradient(center, ellipse cover,  var(--gradient-color-1) 0%,var(--gradient-color-2) 100%) no-repeat;
+  background: radial-gradient(ellipse at center,  var(--gradient-color-1) 0%,var(--gradient-color-2) 100%) no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=var(--gradient-color-1), endColorstr=var(--gradient-color-2),GradientType=1 ) no-repeat;
+}
+.area{
+color: var(--text-color);
+border-radius: calc(var(--border-radius)/2);
+border-width: 1px;
+border-color: var(--area-color);
+margin: var(--margin);
+margin-bottom: 15px;
+padding: 5px;
+padding-left: 15px;
+background-color: var(--area-color);
+font-family: Noto Sans;
+font-size: 18px;
+font-weight: 400;
+}
+.button-attention{
+font-family: Noto Sans;
+color: var(--text-color-dark);
+font-size: 14px;
+font-weight: 700;
+background-color: var(--attention-color);
+border-radius: calc(var(--border-radius)/2);
+border: 0;
+padding: 10px;
+margin: var(--margin);
+margin-top: 5px;
+margin-bottom: 5px;
+}
+.button{
+font-family: Noto Sans;
+color: var(--text-color);
+font-size: 14px;
+font-weight: 700;
+background-color: var(--area-color);
+border-radius: calc(var(--border-radius)/2);
+border: 0;
+padding: 5px;
+margin: var(--margin);
+margin-top: 15px;
+margin-bottom: 15px;
+}
+.input{
+color: var(--text-color);
+border-radius: calc(var(--border-radius)/2);
+border-width: 1px;
+border-color: var(--area-color);
+min-width: 30px;
+max-width: 25%;
+margin: var(--margin);
+padding: 5px;
+padding-left: 15px;
+background-color: var(--area-color);
+font-family: Noto Sans;
+font-size: 18px;
+font-weight: 400;
+align: right;
+}
+.text{
+font-family: Noto Sans;
+}
+.yellow-text{
+font-family: Noto Sans;
+color: var(--attention-color);
+}
+.h1{
+font-family: Noto Sans;
+color: var(--text-color-light);
+font-size: 35px;
+font-weight: 800;
+}
+.h2{
+font-family: Noto Sans;
+color: var(--text-color-light);
+font-size: 20px;
+font-weight: 600;
+}
+.h3{
+font-family: Noto Sans;
+color: var(--text-color-light);
+font-size: 14px;
+font-weight: 400;
+}
+
+.hyperlink{
+color: white;
+text-decoration: none;
+}
+
+
+.image-button{
+cursor: hand;
+}
+.bordered-area{
+border-radius: 5px, 5px;
+border-color: var(--border-color);
+border-width: 1;
+border-style: dashed;
+background-color: area-color;
+}
+
+.area .content{
+border-radius: 0;
+}
+
+.table-row{
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+.table-cell{
+  padding-left: 3px;
+  padding-right: 3px;
+}

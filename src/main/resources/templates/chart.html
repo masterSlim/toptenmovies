@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<link rel="stylesheet" href="../css/Style.css" th:href="@{/css/Style.css}">
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="with=device-width, initial-scale=1.0">
+    <title>im title</title>
+</head>
+<body class="gradient-background">
+<div class="flex-column stage" align="center">
+    <h1 class="h2" align="center" th:text="${'Топ за ' + years}"></h1>
+      <table class="h3">
+        <tr class="table-row" th:each="movie : ${chart}">
+          <td class="h2 table-cell" th:text="${chart.indexOf(movie)+1}"></td>
+          <td class="table-cell" th:text="${movie.getOrigName}"></td>
+          <td class="yellow-text table-cell" th:text="${movie.getRating}"></td>
+          <td class="table-cell" th:text="${'(' + movie.getVotes +')'}"></td>
+        </tr>
+      </table>
+    <form id="oneYear" method="post">
+      <h3 th:if="${error}" class="area h3" th:text="${message}"></h3>
+      <h3 class="h3">Ведите год</h3>
+      <input class="input"  float="left" type="number" min="1890" max="2025" required name="fromYear" placeholder="2019">
+      <button type="submit" form="oneYear" class="button-attention">Отобразить</button>
+    </form>
+    <form id="someYears" method="post">
+      <h3 class="h3">Или диапазон лет</h3>
+      <input class="input" float="left" type="number" min="1890" max="2025" required name="fromYear" placeholder="с 1890">
+      <input class="input" float="left" type="number" min="1890" max="2025" required name="toYear" placeholder="по 2025">
+      <button type="submit" form="someYears" class="button-attention">Отобразить</button>
+    </form>
+</div>
+<div align=center>
+    <a class="flex-row hyperlink" href="https://github.com/masterSlim/Taskbook">
+        <h3 class="h3 text">Открыть проект на</h3>
+        <div class="button">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png" width=45px
+                 style="display:block">
+        </div>
+    </a>
+</div>
+</body>
+</html>

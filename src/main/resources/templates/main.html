@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<link rel="stylesheet" href="../css/Style.css" type="text/css">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="with=device-width, initial-scale=1.0">
+    <title>im title</title>
+</head>
+<body class="gradient-background">
+<div class="flex-column stage" align="center">
+    <h2 class="h2" align="center">Топ-10 сайта Кинопоиск</h2>
+    <h3 class="h3" align="center">С большой долей вероятности, тут будет описание этого всего, а пока</h3>
+    <form id="oneYear" method="post">
+      <h3 th:if="${error}" class="area h3" th:text="${message}"></h3>
+      <h3 class="h3">ведите год</h3>
+      <input class="input"  float="left" type="number" min="1890" max="2025" required name="fromYear" placeholder="2019">
+      <button type="submit" form="oneYear" class="button-attention">Отобразить</button>
+    </form>
+    <form id="someYears" method="post">
+      <h3 class="h3">или диапазон лет</h3>
+      <input class="input" float="left" type="number" min="1890" max="2025" required name="fromYear" placeholder="с 1890">
+      <input class="input" float="left" type="number" min="1890" max="2025" required name="toYear" placeholder="по 2025">
+      <button type="submit" form="someYears" class="button-attention">Отобразить</button>
+    </form>
+</div>
+<div align=center>
+    <a class="flex-row hyperlink" href="https://github.com/masterSlim/toptenmovies">
+        <h3 class="h3 text">Открыть проект на</h3>
+        <div class="button">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png" width=45px
+                 style="display:block">
+        </div>
+    </a>
+</div>
+</body>
+</html>

@@ -9,16 +9,16 @@ public class ChartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private int year;
+    // для реализации хранения топов за дипазон лет поле year представляет собой строку (просто 2021 или 2021-2022)
+    private int[] year;
     private int position;
     private long movieHash;
-
     @Column(unique = true)
     private int hash;
 
     public ChartEntity() {}
 
-    public ChartEntity(int year, int position, long movieHash) {
+    public ChartEntity(int position, long movieHash, int... year) {
         this.year = year;
         this.position = position;
         this.movieHash = movieHash;
@@ -71,11 +71,11 @@ public class ChartEntity {
         this.id = id;
     }
 
-    public int getYear() {
+    public int[] getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(int...years) {
         this.year = year;
     }
 

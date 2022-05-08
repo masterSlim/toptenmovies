@@ -1,12 +1,14 @@
+application-properties:
+  mode: PARSER
+  size: 10
 kinopoisk-api:
   key: c84b92f5-1609-40ed-9b82-db53584b14a7
   api: https://kinopoiskapiunofficial.tech
   getTopMethod: /api/v2.2/films/top/lists/movies/top250/year--2021/
 parser:
-  online: false
-  test-file: src/main/resources/250 лучших фильмов — Кинопоиск.htm
+  test-file: src/main/resources/Топ за 2019  — Кинопоиск.htm
   headers-file: src/main/resources/headers.json
-  get-top-template: /lists/movies/year--DATE/?b=top
+  get-chart-template: /lists/movies/year--DATE/?b=top
   title-css-class: styles_mainTitle__IFQyZ
   rating-css-class: styles_kinopoiskValue__9qXjg
   votes-css-class: styles_kinopoiskCount__2_VPQ

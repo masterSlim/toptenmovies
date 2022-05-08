@@ -1,15 +1,17 @@
 package com.mrslim.toptenmovies;
 
+import com.mrslim.toptenmovies.config.ApplicationConfig;
 import com.mrslim.toptenmovies.entities.MovieEntity;
 import com.mrslim.toptenmovies.repositories.ChartRepository;
 import com.mrslim.toptenmovies.repositories.MovieRepository;
-import com.mrslim.toptenmovies.services.ParseMovieService;
+import com.mrslim.toptenmovies.services.MainMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -19,11 +21,14 @@ import java.util.regex.Pattern;
 @Component
 public class CommandLineRunner implements org.springframework.boot.CommandLineRunner {
     @Autowired
-    ParseMovieService parseMovieService;
+    ChartRepository chartRepo;
     @Autowired
-    ChartRepository chartRepository;
+    MovieRepository movieRepo;
     @Autowired
-    MovieRepository movieRepository;
+    ApplicationConfig appConfig;
+    @Autowired
+    MainMovieService mainMovieService;
+
 
     LinkedHashMap<String, String> commands = new LinkedHashMap<>();
 
@@ -31,7 +36,8 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
         commands.put("help", "выводит список команд");
         commands.put("get 2021", "получить топ-10 фильмов кинопоиска за 2021 год");
         commands.put("get 2018-2021", "получить топ-10 фильмов кинопоиска за период 2018-2021 год");
-        commands.put("drop", "очистить локальную базу данных");
+        commands.put("data", "количество записей в локальной базе данных");
+        commands.put("clear", "очистить локальную базу данных");
         commands.put("q", "завершить работу");
     }
 
@@ -44,111 +50,115 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
         while (true) {
             String userInput = reader.readLine();
             if (parseInput(userInput)) {
-                System.out.println("successful");
                 continue;
             } else System.out.println("Ошибка ввода");
         }
     }
 
-    private boolean parseInput(String userInput) throws IOException {
+    private boolean parseInput(String userInput) throws IOException, URISyntaxException, InterruptedException {
         String temp = userInput.trim().toLowerCase();
+        boolean executed = false;
+
         if (temp.isEmpty()) return false;
 
         // b граница слова
         Pattern command = Pattern.compile("\\bhelp\\b");
         Matcher commandMatch = command.matcher(temp);
-        if (commandMatch.find()) return help();
+        if (commandMatch.find()) executed = help();
 
         // b граница слова
         command = Pattern.compile("\\bget\\b");
         commandMatch = command.matcher(temp);
-        if (commandMatch.find()) return get(userInput);
+        if (commandMatch.find()) executed = get(userInput);
 
         // b граница слова
-        command = Pattern.compile("\\bdrop\\b");
+        command = Pattern.compile("\\bdata\\b");
         commandMatch = command.matcher(temp);
-        if (commandMatch.find()){
-            return drop();
-        }
+        if (commandMatch.find()) executed = data();
+
+        // b граница слова
+        command = Pattern.compile("\\bclear\\b");
+        commandMatch = command.matcher(temp);
+        if (commandMatch.find()) executed = clear();
 
         // b граница слова
         command = Pattern.compile("\\bq\\b");
         commandMatch = command.matcher(temp);
         if (commandMatch.find()) {
             System.exit(0);
-            return true;
         }
 
-        return false;
+        return executed;
     }
 
-    private boolean drop() {
-        //TODO не очищает файл
-        chartRepository.deleteAll();
-        movieRepository.deleteAll();
-        System.out.println("Локальные базы данных успешно очищены");
-        return true;
-    }
-
-    private boolean help() {
-        StringBuilder showConmands = new StringBuilder();
-        commands.forEach((key, value) -> showConmands.append(key).append(" ").append(value).append("\n"));
+    public boolean help() {
         System.out.println("Команды приложения:");
-        for(String key: commands.keySet()){
+        for (String key : commands.keySet()) {
             System.out.printf("%-15s %s\n", key, commands.get(key));
         }
-        //System.out.println(showConmands);
         return true;
     }
 
     //TODO проверять сначала кэш, потом базу, потом уже идти парсить
-    private boolean get(String command) throws IOException {
-        LinkedList<MovieEntity> result = null;
-        String successMessage = "В базу данных были добавлены следующие фильмы из рейтинга";
-        {
-            // b     граница слова (в том числе группы цифр)
-            // d{4}  четыре цифры
-            // s*    ни одного или сколько угодно пробелов
-            // W+    один и более симовлов, не относящихся к буквам и цифрам
-            // s*    ни одного или сколько угодно пробелов
-            // d{4}  четыре цифры
-            // b     граница слова (в том числе группы цифр)
-            Pattern p = Pattern.compile("\\b\\d{4}\\s*\\W+\\s*\\d{4}\\b");
-            Matcher m = p.matcher(command);
-            if (m.find()) {
-                String range = m.group(0);
-                // d{4} четыре цифры
-                Pattern p2 = Pattern.compile("\\d{4}");
-                Matcher m2 = p2.matcher(range);
-                m2.find();
-                int firstYear = Integer.parseInt(m2.group());
-                m2.find();
-                int secondYear = Integer.parseInt(m2.group());
-                if (firstYear < secondYear) {
-                    result = parseMovieService.getMovies(firstYear, secondYear);
-                    System.out.printf(successMessage + " за период %d - %d \n%n", firstYear, secondYear);
-                    result.forEach(System.out::println);
-                } else {
-                    result = parseMovieService.getMovies(secondYear, firstYear);
-                    System.out.printf(successMessage + " за период %d - %d \n%n", secondYear, firstYear);
-                    result.forEach(System.out::println);
-                }
-                return true;
-            }
-            // b     граница слова (в том числе группы цифр)
-            // d{4}  четыре цифры
-            // b     граница слова (в том числе группы цифр)
-            p = Pattern.compile("\\b\\d{4}\\b");
-            m = p.matcher(command);
-            if (m.find()) {
-                int forYear = Integer.parseInt(m.group());
-                result = parseMovieService.getMovies(forYear);
-                System.out.printf(successMessage + " за %d год\n", forYear);
-                result.forEach(System.out::println);
-                return true;
-            }
+    public boolean get(String command) throws IOException, URISyntaxException, InterruptedException {
+
+        // b     граница слова (в том числе группы цифр)
+        // d{4}  четыре цифры
+        // s*    ни одного или сколько угодно пробелов
+        // W+    один и более симовлов, не относящихся к буквам и цифрам
+        // s*    ни одного или сколько угодно пробелов
+        // d{4}  четыре цифры
+        // b     граница слова (в том числе группы цифр)
+        Pattern p = Pattern.compile("\\b\\d{4}\\s*\\W+\\s*\\d{4}\\b");
+        Matcher m = p.matcher(command);
+        // выполняется, если найден ввод диапазона (например 2021-2022)
+        if (m.find()) {
+            
+            String range = m.group(0);
+            // d{4} четыре цифры
+            Pattern p2 = Pattern.compile("\\d{4}");
+            Matcher m2 = p2.matcher(range);
+            m2.find();
+            int firstEntry = Integer.parseInt(m2.group());
+            m2.find();
+            int secondEntry = Integer.parseInt(m2.group());
+            int fromYear = Math.min(firstEntry, secondEntry);
+            int toYear = Math.max(firstEntry, secondEntry);
+            LinkedList<MovieEntity> movies = mainMovieService.getMovies(fromYear, toYear);
+            return true;
+        }
+
+        // b     граница слова (в том числе группы цифр)
+        // d{4}  четыре цифры
+        // b     граница слова (в том числе группы цифр)
+        p = Pattern.compile("\\b\\d{4}\\b");
+        m = p.matcher(command);
+
+        // выполняется, если найден ввод одного года (например 2021)
+        // Этот блок выполняется только тогда, когда не был найден диапазон,
+        // иначе будет обработан только первый найденный год из диапазона
+        // Например при запросе get 2021-2022 был бы обработан get 2021
+        if (m.find()) {
+            int year = Integer.parseInt(m.group());
+            LinkedList<MovieEntity> movies = mainMovieService.getMovies(year);
+            return true;
         }
         return false;
     }
+
+    public boolean data() {
+        long chartSize = chartRepo.count();
+        long movieSize = movieRepo.count();
+        System.out.printf("В базе данных %d рейтингов и %d фильмов\n", chartSize, movieSize);
+        return true;
+    }
+
+    public boolean clear() {
+        chartRepo.deleteAll();
+        movieRepo.deleteAll();
+        System.out.println("Локальные базы данных успешно очищены");
+        return true;
+    }
+
 
 }

@@ -1,26 +1,25 @@
 package com.mrslim.toptenmovies;
 
-import com.mrslim.toptenmovies.entities.ChartEntity;
-import com.mrslim.toptenmovies.entities.MovieEntity;
+import com.mrslim.toptenmovies.config.ApiConfig;
+import com.mrslim.toptenmovies.config.ApplicationConfig;
+import com.mrslim.toptenmovies.config.ParserConfig;
 import com.mrslim.toptenmovies.repositories.ChartRepository;
 import com.mrslim.toptenmovies.repositories.MovieRepository;
-import com.mrslim.toptenmovies.services.ParseMovieService;
+import com.mrslim.toptenmovies.services.ParserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 @SpringBootApplication
 @EnableCaching
+@EnableConfigurationProperties({ApiConfig.class, ParserConfig.class, ApplicationConfig.class})
 public class ToptenmoviesApplication {
     @Autowired
-    ParseMovieService pms;
+    ParserService pms;
     @Autowired
     MovieRepository movieRepository;
     @Autowired
@@ -28,7 +27,6 @@ public class ToptenmoviesApplication {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(ToptenmoviesApplication.class, args);
-        System.out.println("runned application");
     }
 
     @PostConstruct

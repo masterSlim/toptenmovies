@@ -6,23 +6,23 @@ import java.util.Objects;
 @Entity
 @Table(name = "movies")
 public class MovieEntity {
-    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private double rating;
-    private String originalName;
+    private String origName;
     private int year;
-    private long votes;
     @Column(unique = true)
+    @Id
     private long hash;
+    private long votes;
 
 
     public MovieEntity() {
     }
 
-    public MovieEntity(double rating, String originalName, int year, long votes) {
+    public MovieEntity(double rating, String origName, int year, long votes) {
         this.rating = rating;
-        this.originalName = originalName;
+        this.origName = origName;
         this.year = year;
         this.votes = votes;
         hash = hashCode();
@@ -48,12 +48,12 @@ public class MovieEntity {
         this.rating = rating;
     }
 
-    public String getOriginalName() {
-        return originalName;
+    public String getOrigName() {
+        return origName;
     }
 
-    public void setOriginalName(String originalName) {
-        this.originalName = originalName;
+    public void setOrigName(String origName) {
+        this.origName = origName;
     }
 
     public int getYear() {
@@ -76,18 +76,18 @@ public class MovieEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        boolean equals = (this.originalName.equals(((MovieEntity) o).originalName))
+        boolean equals = (this.origName.equals(((MovieEntity) o).origName))
                 && (this.year == ((MovieEntity) o).year);
         return equals;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originalName, year);
+        return Objects.hash(origName, year);
     }
 
     @Override
     public String toString() {
-        return String.format("%s %.1f (%d votes)", originalName, rating, votes);
+        return String.format("%s %.1f (%d votes)", origName, rating, votes);
     }
 }

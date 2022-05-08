@@ -19,7 +19,7 @@ import java.time.Duration;
 import java.util.LinkedList;
 
 @Service
-public class ApiMovieService implements MovieService {
+public class ApiService implements MovieService {
     /*
     Используется неофициальный Api Кинопоиска https://kinopoiskapiunofficial.tech
      */
@@ -31,13 +31,9 @@ public class ApiMovieService implements MovieService {
     private URI getTopURI;
     private CacheManager cacheManager;
 
-    public LinkedList<MovieEntity> getMovies(int forDate) throws URISyntaxException, IOException, InterruptedException {
-    return getMovies(forDate, 10);
-    }
-
     @Override
     @Cacheable()
-    public LinkedList<MovieEntity> getMovies(int... years) throws URISyntaxException, IOException, InterruptedException {
+    public LinkedList<MovieEntity> getMovies(int...years) throws URISyntaxException, IOException, InterruptedException {
 
         LinkedList<MovieEntity> result = new LinkedList<>();
         ObjectMapper mapper = new ObjectMapper();

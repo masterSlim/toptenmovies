@@ -4,10 +4,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("parser")
 public class ParserConfig {
-    private boolean online;
     private String testFile;
     private String headersFile;
-    private String getTopTemplate;
+    private String getChartTemplate;
     private String titleCssClass;
     private String ratingCssClass;
     private String votesCssClass;
@@ -45,20 +44,12 @@ public class ParserConfig {
         this.testFile = testFile;
     }
 
-    public boolean isOnline() {
-        return online;
+    public String getChartTemplate() {
+        return getChartTemplate;
     }
 
-    public void setOnline(boolean online) {
-        this.online = online;
-    }
-
-    public String getGetTopTemplate() {
-        return getTopTemplate;
-    }
-
-    public void setGetTopTemplate(String getTopTemplate) {
-        this.getTopTemplate = getTopTemplate;
+    public void setGetChartTemplate(String getChartTemplate) {
+        this.getChartTemplate = getChartTemplate;
     }
 
     public String getTitleCssClass() {

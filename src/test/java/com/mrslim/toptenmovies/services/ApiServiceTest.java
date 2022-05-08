@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ApiMovieServiceTest {
+class ApiServiceTest {
 //private String
     @Test
     void getMovies() {
