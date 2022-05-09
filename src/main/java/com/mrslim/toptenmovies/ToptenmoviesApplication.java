@@ -1,22 +1,17 @@
 package com.mrslim.toptenmovies;
 
-import com.mrslim.toptenmovies.config.ApiConfig;
-import com.mrslim.toptenmovies.config.ApplicationConfig;
-import com.mrslim.toptenmovies.config.ParserConfig;
 import com.mrslim.toptenmovies.repositories.ChartRepository;
 import com.mrslim.toptenmovies.repositories.MovieRepository;
 import com.mrslim.toptenmovies.services.ParserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 
 import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 @EnableCaching
-@EnableConfigurationProperties({ApiConfig.class, ParserConfig.class, ApplicationConfig.class})
 public class ToptenmoviesApplication {
     @Autowired
     ParserService pms;

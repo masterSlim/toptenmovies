@@ -2,6 +2,7 @@
 
 :root {
 --stage-color: #050012;
+--red-color: #f50c46;
 --area-color: #fffce3;
 --text-color-dark: #050012;
 --text-color-light: #e0e0e0;
@@ -109,6 +110,7 @@ font-size: 18px;
 font-weight: 400;
 align: right;
 }
+
 .text{
 font-family: Noto Sans;
 }
@@ -116,6 +118,14 @@ font-family: Noto Sans;
 font-family: Noto Sans;
 color: var(--attention-color);
 }
+
+.error{
+font-family: Noto Sans;
+color: var(--red-color);
+font-size: 14;
+font-weight: 400;
+}
+
 .h1{
 font-family: Noto Sans;
 color: var(--text-color-light);
@@ -139,6 +149,7 @@ font-weight: 400;
 color: white;
 text-decoration: none;
 }
+
 
 
 .image-button{

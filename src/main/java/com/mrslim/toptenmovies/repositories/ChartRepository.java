@@ -8,6 +8,6 @@ import java.util.LinkedList;
 
 @Repository
 public interface ChartRepository extends CrudRepository<ChartEntity, Integer> {
-    public boolean existsByHash(int hash);
+    public boolean existsByYear(int...years);
     public LinkedList<ChartEntity> findByYear(int...years);
 }

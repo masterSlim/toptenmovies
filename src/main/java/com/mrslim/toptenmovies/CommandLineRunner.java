@@ -1,6 +1,6 @@
 package com.mrslim.toptenmovies;
 
-import com.mrslim.toptenmovies.config.ApplicationConfig;
+import com.mrslim.toptenmovies.config.GeneralConfig;
 import com.mrslim.toptenmovies.entities.MovieEntity;
 import com.mrslim.toptenmovies.repositories.ChartRepository;
 import com.mrslim.toptenmovies.repositories.MovieRepository;
@@ -25,7 +25,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
     @Autowired
     MovieRepository movieRepo;
     @Autowired
-    ApplicationConfig appConfig;
+    GeneralConfig appConfig;
     @Autowired
     MainMovieService mainMovieService;
 
@@ -34,8 +34,8 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
 
     {
         commands.put("help", "выводит список команд");
-        commands.put("get 2021", "получить топ-10 фильмов кинопоиска за 2021 год");
-        commands.put("get 2018-2021", "получить топ-10 фильмов кинопоиска за период 2018-2021 год");
+        commands.put("get 2021", "получить топ-10 фильмов Кинопоиска за 2021 год");
+        commands.put("get 2018-2021", "получить топ-10 фильмов Кинопоиска за период 2018-2021 год");
         commands.put("data", "количество записей в локальной базе данных");
         commands.put("clear", "очистить локальную базу данных");
         commands.put("q", "завершить работу");
@@ -48,8 +48,8 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
         help();
         if (args.length > 0) parseInput(Arrays.toString(args));
         while (true) {
-            String userInput = reader.readLine();
-            if (parseInput(userInput)) {
+            String usersInput = reader.readLine();
+            if (parseInput(usersInput)) {
                 continue;
             } else System.out.println("Ошибка ввода");
         }
@@ -124,7 +124,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
             int secondEntry = Integer.parseInt(m2.group());
             int fromYear = Math.min(firstEntry, secondEntry);
             int toYear = Math.max(firstEntry, secondEntry);
-            LinkedList<MovieEntity> movies = mainMovieService.getMovies(fromYear, toYear);
+            mainMovieService.getMovies(fromYear, toYear);
             return true;
         }
 
@@ -136,11 +136,11 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
 
         // выполняется, если найден ввод одного года (например 2021)
         // Этот блок выполняется только тогда, когда не был найден диапазон,
-        // иначе будет обработан только первый найденный год из диапазона
+        // иначе будет обработан только первый найденный год из диапазона.
         // Например при запросе get 2021-2022 был бы обработан get 2021
         if (m.find()) {
             int year = Integer.parseInt(m.group());
-            LinkedList<MovieEntity> movies = mainMovieService.getMovies(year);
+            mainMovieService.getMovies(year);
             return true;
         }
         return false;

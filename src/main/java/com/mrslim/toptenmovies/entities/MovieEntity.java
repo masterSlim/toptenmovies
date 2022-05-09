@@ -6,30 +6,23 @@ import java.util.Objects;
 @Entity
 @Table(name = "movies")
 public class MovieEntity {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private double rating;
     private String origName;
-    private int year;
-    @Column(unique = true)
-    @Id
-    private long hash;
     private long votes;
+    private int[] year;
 
 
     public MovieEntity() {
     }
 
-    public MovieEntity(double rating, String origName, int year, long votes) {
+    public MovieEntity(double rating, String origName, int[] year, long votes) {
         this.rating = rating;
         this.origName = origName;
         this.year = year;
         this.votes = votes;
-        hash = hashCode();
-    }
-
-    public long getHash() {
-        return hash;
     }
 
     public long getId() {
@@ -56,11 +49,11 @@ public class MovieEntity {
         this.origName = origName;
     }
 
-    public int getYear() {
+    public int[] getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(int[] year) {
         this.year = year;
     }
 

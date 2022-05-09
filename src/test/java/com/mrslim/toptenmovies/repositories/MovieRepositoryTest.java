@@ -20,7 +20,7 @@ class MovieRepositoryTest {
 
     @Test
     public void whenCalledSave_thenCorrectNumberOfMovies() {
-        movieRepository.save(new MovieEntity(666, "Original name", 1992, 3123));
+        //movieRepository.save(new MovieEntity(666, "Original name", new int[1]{1992}, 3123));
         List<MovieEntity> movieEntities = (List<MovieEntity>) movieRepository.findAll();
 
         assertEquals(movieEntities.size(), 1);

@@ -8,7 +8,8 @@
 </head>
 <body class="gradient-background">
 <div class="flex-column stage" align="center">
-    <h1 class="h2" align="center" th:text="${'Топ за ' + years}"></h1>
+    <h1 class="h2 yellow-text" align="center" th:text="${'Топ за ' + years}"></h1>
+    <h3 class="area error" th:if="${error}" th:text="${message}"></h3>
       <table class="h3">
         <tr class="table-row" th:each="movie : ${chart}">
           <td class="h2 table-cell" th:text="${chart.indexOf(movie)+1}"></td>
@@ -18,13 +19,12 @@
         </tr>
       </table>
     <form id="oneYear" method="post">
-      <h3 th:if="${error}" class="area h3" th:text="${message}"></h3>
-      <h3 class="h3">Ведите год</h3>
+      <h3 class="h3">Введите год</h3>
       <input class="input"  float="left" type="number" min="1890" max="2025" required name="fromYear" placeholder="2019">
       <button type="submit" form="oneYear" class="button-attention">Отобразить</button>
     </form>
     <form id="someYears" method="post">
-      <h3 class="h3">Или диапазон лет</h3>
+      <h3 class="h3">или диапазон лет</h3>
       <input class="input" float="left" type="number" min="1890" max="2025" required name="fromYear" placeholder="с 1890">
       <input class="input" float="left" type="number" min="1890" max="2025" required name="toYear" placeholder="по 2025">
       <button type="submit" form="someYears" class="button-attention">Отобразить</button>

@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("parser")
 public class ParserConfig {
-    private String testFile;
+    private String offlineDir;
     private String headersFile;
     private String getChartTemplate;
     private String titleCssClass;
@@ -36,12 +36,12 @@ public class ParserConfig {
         this.secondaryTextCssClass = secondaryTextCssClass;
     }
 
-    public String getTestFile() {
-        return testFile;
+    public String getOfflineDir() {
+        return offlineDir;
     }
 
-    public void setTestFile(String testFile) {
-        this.testFile = testFile;
+    public void setOfflineDir(String offlineDir) {
+        this.offlineDir = offlineDir;
     }
 
     public String getChartTemplate() {

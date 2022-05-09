@@ -1,6 +1,7 @@
 package com.mrslim.toptenmovies.entities;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -9,25 +10,18 @@ public class ChartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    // для реализации хранения топов за дипазон лет поле year представляет собой строку (просто 2021 или 2021-2022)
     private int[] year;
     private int position;
-    private long movieHash;
-    @Column(unique = true)
-    private int hash;
+    private String origName;
+    private int[] movieYear;
 
     public ChartEntity() {}
 
-    public ChartEntity(int position, long movieHash, int... year) {
-        this.year = year;
+    public ChartEntity(int position, String origName, int[] year, int[] movieYear) {
         this.position = position;
-        this.movieHash = movieHash;
-        hash = hashCode();
-    }
-
-
-    public int getHash() {
-        return hash;
+        this.origName=origName;
+        this.year = year;
+        this.movieYear = movieYear;
     }
 
     @Override
@@ -39,28 +33,7 @@ public class ChartEntity {
 
         if (year != that.year) return false;
         if (position != that.position) return false;
-        return movieHash == that.movieHash;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(year, movieHash);
-    }
-
-    public long getMovieHash() {
-        return movieHash;
-    }
-
-    public void setMovieHash(long movieHash) {
-        this.movieHash = movieHash;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
+        return hashCode() == that.hashCode();
     }
 
     public long getId() {
@@ -71,21 +44,45 @@ public class ChartEntity {
         this.id = id;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public String getOrigName() {
+        return origName;
+    }
+
+    public void setOrigName(String origName) {
+        this.origName = origName;
+    }
+
+    public int[] getMovieYear() {
+        return movieYear;
+    }
+
+    public void setMovieYear(int[] movieYear) {
+        this.movieYear = movieYear;
+    }
+
     public int[] getYear() {
         return year;
     }
 
-    public void setYear(int...years) {
-        this.year = year;
+    public void setYear(int[] years) {
+        this.year = years;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(year, origName, movieYear);
     }
 
     @Override
     public String toString() {
-        return "ChartEntity{" +
-                "id=" + id +
-                ", year=" + year +
-                ", position=" + position +
-                ", movieHash=" + movieHash +
-                '}';
+        return String.format("Чарт за %s: %d место %s (%s)", Arrays.toString(year), position, origName, Arrays.toString(movieYear));
     }
 }

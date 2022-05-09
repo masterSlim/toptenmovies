@@ -2,7 +2,7 @@ package com.mrslim.toptenmovies.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mrslim.toptenmovies.config.ApplicationConfig;
+import com.mrslim.toptenmovies.config.GeneralConfig;
 import com.mrslim.toptenmovies.config.Mode;
 import com.mrslim.toptenmovies.config.ParserConfig;
 import com.mrslim.toptenmovies.entities.MovieEntity;
@@ -40,32 +40,43 @@ import java.util.regex.Pattern;
 public class ParserService implements MovieService {
     private final String site = "https://www.kinopoisk.ru";
     @Autowired
-    ApplicationConfig appConfig;
+    private GeneralConfig appConfig;
     @Autowired
     private ParserConfig parserConfig;
     @Autowired
-    MovieRepository movieRepo;
+    private MovieRepository movieRepo;
 
     @Override
-    public LinkedList<MovieEntity> getMovies(int...years) throws IOException {
+    public LinkedList<MovieEntity> getMovies(int... years) throws IOException {
         LinkedList<MovieEntity> result;
-        String date = (years.length == 2)? years[0]+"-"+years[1] : Integer.toString(years[0]);
-        if (appConfig.getMode() == Mode.PARSER) {
+        Document page = getPage(years);
+        result = parse(page);
+        if (result.size() <= appConfig.getSize()) return result;
+        else result = new LinkedList<>(result.subList(0, appConfig.getSize()));
+        return result;
+    }
+
+    private Document getPage(int...years) throws IOException {
+        Document page;
+        String date = (years.length == 2) ? years[0] + "-" + years[1] : Integer.toString(years[0]);
+        if (appConfig.getMode() == Mode.ONLINE) {
             String getChartTemplate = parserConfig.getChartTemplate().replace("DATE", date);
             Connection con = Jsoup.connect(site + getChartTemplate).headers(getHeaders());
-            Document page = con.get();
-            result = new LinkedList<>(parse(page));
-            System.out.println(page);
-            if (result.size() <= appConfig.getSize()) return result;
-            else result = new LinkedList<>(result.subList(0, appConfig.getSize()));
+            page = con.get();
         } else {
-            Document page = Jsoup.parse(new File(parserConfig.getTestFile()), "UTF-8");
-            result = new LinkedList<>(parse(page));
-            if (result.size() <= appConfig.getSize()) return result;
-            else result = new LinkedList<>(result.subList(0, appConfig.getSize()));
+            File dir = new File(parserConfig.getOfflineDir());
+            if (!dir.isDirectory()) throw new IOException("В конфигурационном файле неверно указана офлайн директория");
+            String offlineFile = date + ".htm";
+            File file = null;
+            File[] files = dir.listFiles();
+            if (files == null || (files.length == 0)) throw new IOException("В офлайн директории нет файлов");
+            for (File f : files) {
+                if (f.getName().equals(offlineFile)) file = f;
+            }
+            if (file == null) return null;
+            page = Jsoup.parse(file, "UTF-8");
         }
-
-        return result;
+        return page;
     }
 
     /**
@@ -81,7 +92,7 @@ public class ParserService implements MovieService {
         LinkedList<MovieEntity> result = new LinkedList<>();
         double rating;
         long votes;
-        int year;
+        int[] year;
         String originalName;
         String ratingCssClass = parserConfig.getRatingCssClass();
         String titleClass = parserConfig.getTitleCssClass();
@@ -113,19 +124,33 @@ public class ParserService implements MovieService {
             String secondaryText = parent.getElementsByClass(secondaryTextCssClass).text();
             int b = secondaryText.lastIndexOf(", ");
             int a = secondaryText.lastIndexOf(", ", b - 1);
+
+            // Если присутствует оригинальное название
             if (a != -1) {
                 originalName = secondaryText.substring(0, a);
                 Pattern p = Pattern.compile("\\d{4}"); // d{4} четыре цифры
                 Matcher m = p.matcher(secondaryText.substring(a, b));
                 m.find();
-                year = Integer.parseInt(m.group());
-            } else {
-                //TODO: добавить парсинг диапазона лет для сериалов
+                int fromYear = Integer.parseInt(m.group());
+                int toYear;
+                if (m.find()) {
+                    toYear = Integer.parseInt(m.group());
+                    year = new int[]{fromYear, toYear};
+                } else year = new int[]{fromYear};
+            }
+
+            // Если присутствует только год и длительность
+            else {
                 String[] secondaryData = secondaryText.split(", ");
                 Pattern p = Pattern.compile("\\d{4}"); // d{4} четыре цифры
                 Matcher m = p.matcher(secondaryData[0]);
                 m.find();
-                year = Integer.parseInt(m.group());
+                int fromYear = Integer.parseInt(m.group());
+                int toYear;
+                if (m.find()) {
+                    toYear = Integer.parseInt(m.group());
+                    year = new int[]{fromYear, toYear};
+                } else year = new int[]{fromYear};
                 originalName = parent.getElementsByClass(titleClass).text();
             }
             MovieEntity movie = new MovieEntity(rating, originalName, year, votes);

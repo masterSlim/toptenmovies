@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MovieRepository extends CrudRepository<MovieEntity, Long> {
-    public MovieEntity findByHash(long hash);
-
-    public boolean existsByHash(long hash);
+    public MovieEntity findByOrigNameAndYear(String origName, int... year);
 }

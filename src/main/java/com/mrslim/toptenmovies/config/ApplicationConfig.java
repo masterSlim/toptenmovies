@@ -1,26 +1,27 @@
 package com.mrslim.toptenmovies.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@ConfigurationProperties("application-properties")
+import java.time.Duration;
+
+@Configuration
+@EnableCaching
+@EnableConfigurationProperties({ParserConfig.class, GeneralConfig.class})
 public class ApplicationConfig {
-    private Mode mode;
-    private int size;
-
-
-    public int getSize() {
-        return size;
+    @Bean
+    public Caffeine caffeineConfig() {
+        return Caffeine.newBuilder().expireAfterWrite(Duration.ofMinutes(15));
     }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public Mode getMode() {
-        return mode;
-    }
-
-    public void setMode(Mode mode) {
-        this.mode = mode;
+    @Bean
+    public CacheManager cacheManager(Caffeine caffeine) {
+        CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
+        caffeineCacheManager.setCaffeine(caffeine);
+        return caffeineCacheManager;
     }
 }
