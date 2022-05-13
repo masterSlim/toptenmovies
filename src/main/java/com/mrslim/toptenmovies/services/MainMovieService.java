@@ -5,7 +5,6 @@ import com.mrslim.toptenmovies.entities.MovieEntity;
 import com.mrslim.toptenmovies.repositories.ChartRepository;
 import com.mrslim.toptenmovies.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -84,14 +83,13 @@ public class MainMovieService implements MovieService {
     }
 
 
-    private boolean updateMovieRepo(LinkedList<MovieEntity> movies) {
-        if (movies.isEmpty()) return false;
+    private void updateMovieRepo(LinkedList<MovieEntity> movies) {
+        if (movies.isEmpty()) return;
         movieRepo.saveAll(movies);
-        return true;
     }
 
-    private boolean updateChartRepo(LinkedList<MovieEntity> movies, int... years) {
-        if (movies.isEmpty()) return false;
+    private void updateChartRepo(LinkedList<MovieEntity> movies, int... years) {
+        if (movies.isEmpty()) return;
         LinkedList<ChartEntity> chart = new LinkedList<>();
         for (MovieEntity movie : movies) {
             ChartEntity chartEntity = new ChartEntity(
@@ -103,7 +101,6 @@ public class MainMovieService implements MovieService {
             chart.add(chartEntity);
         }
         chartRepo.saveAll(chart);
-        return true;
     }
 
 }

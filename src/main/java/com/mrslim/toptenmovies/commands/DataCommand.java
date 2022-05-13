@@ -19,7 +19,7 @@ public class DataCommand implements Command {
     public boolean execute(String input) throws URISyntaxException, IOException, InterruptedException {
         long chartSize = chartRepo.count();
         long movieSize = movieRepo.count();
-        System.out.printf("В базе данных %d рейтингов и %d фильмов\n", chartSize, movieSize);
+        System.out.printf("В базе данных %d записей о рейтингах и %d фильмов\n", chartSize, movieSize);
         return true;
     }
 }
