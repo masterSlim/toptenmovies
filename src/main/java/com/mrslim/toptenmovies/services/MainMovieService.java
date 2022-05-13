@@ -22,8 +22,6 @@ public class MainMovieService implements MovieService {
     MovieRepository movieRepo;
     @Autowired
     ParserService parser;
-    @Autowired
-    CacheManager cacheManager;
 
     @Override
     @Cacheable(value = "movies", key = "#years")
@@ -33,21 +31,14 @@ public class MainMovieService implements MovieService {
         if (years.length == 0) return movies;
 
         movies = getFromDatabase(years);
-        if (!movies.isEmpty()) {
-            return movies;
-        }
+        if (!movies.isEmpty()) return movies;
 
         movies = getFromSite(years);
-        if (!movies.isEmpty()) {
-            String successMessage = "В базу данных были добавлены следующие фильмы и рейтинг";
-            System.out.printf(successMessage + " за период %s \n", Arrays.toString(years));
-            movies.forEach(System.out::println);
-            return movies;
-        }
+
         return movies;
     }
 
-    private LinkedList<MovieEntity> getFromDatabase(int... years) {
+    public LinkedList<MovieEntity> getFromDatabase(int... years) {
         LinkedList<MovieEntity> movies = new LinkedList<>();
         LinkedList<ChartEntity> chartEntities = chartRepo.findByYear(years);
         if (chartEntities.isEmpty()) return movies;
@@ -57,12 +48,25 @@ public class MainMovieService implements MovieService {
         return movies;
     }
 
-    private LinkedList<MovieEntity> getFromSite(int... years) throws IOException {
-        LinkedList<MovieEntity> movies;
-        movies = parser.getMovies(years);
+    public LinkedList<MovieEntity> getFromSite(int... years) throws IOException {
+        LinkedList<MovieEntity> movies = new LinkedList<>();
+        try {
+            movies = parser.getMovies(years);
+        }
+        catch (RuntimeException e){
+            System.err.println(e.getMessage());
+            return movies;
+        }
+
         if (movies.isEmpty()) return movies;
+
         updateMovieRepo(movies);
         updateChartRepo(movies, years);
+        if(!movies.isEmpty()) {
+            String successMessage = "В базу данных были добавлены следующие фильмы и рейтинг";
+            System.out.printf(successMessage + " за период %s \n", Arrays.toString(years));
+            movies.forEach(System.out::println);
+        }
         return movies;
     }
 
